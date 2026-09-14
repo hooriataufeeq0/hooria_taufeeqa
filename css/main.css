@@ -16,6 +16,7 @@
     10.0 Widget Section
     11.0 Footer Section
     12.0 Scroll To Top
+    13.0 mouse trial
 
     ==========================================================================
     Xavia Personal Portfolio 0.1
@@ -1602,6 +1603,21 @@ ul.nav > li > a.active {
         right: 25px;
         bottom: 25px;
     }
+}
+
+
+/* ---- End of max-width 767px CSS ---- */
+
+
+/* ---- Start of max-width 767px CSS ---- */
+#mouseTrail {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 99999;
 }
 
 /* ---- End of max-width 767px CSS ---- */
