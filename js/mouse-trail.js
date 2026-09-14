@@ -1,134 +1,59 @@
-const canvas = document.getElementById("mouseTrail");
-const ctx = canvas.getContext("2d");
+(function () {
+    const canvas = document.getElementById('trailCanvas');
+    if (!canvas) return;
 
-let points = [];
+    const ctx = canvas.getContext('2d');
+    let points = [];
+    const maxPoints = 40; // Length of the flowing line tail
 
-const settings = {
-    lines: 18,
-    maxPoints: 130,
-    spread: 2.2,
-    lineWidth: 1.1,
-    opacity: 0.30
-};
+    // Handle canvas resizing
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
-
-resizeCanvas();
-
-window.addEventListener("resize", resizeCanvas);
-
-window.addEventListener("mousemove", function (e) {
-
-    points.push({
-        x: e.clientX,
-        y: e.clientY,
-        life: 1
+    // Track mouse movement
+    window.addEventListener('mousemove', (e) => {
+        points.push({ x: e.clientX, y: e.clientY });
+        
+        // Keep the array size limited to the max tail length
+        if (points.length > maxPoints) {
+            points.shift();
+        }
     });
 
-    if (points.length > settings.maxPoints) {
-        points.shift();
-    }
-});
+    // Animation Loop
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-function getLinePoint(point, index, line) {
+        if (points.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, points[0].y);
 
-    const waveX = Math.sin(
-        index * 0.22 + line * 0.65
-    );
+            // Draw smooth curve using quadratic curves
+            for (let i = 1; i < points.length - 1; i++) {
+                const xc = (points[i].x + points[i + 1].x) / 2;
+                const yc = (points[i].y + points[i + 1].y) / 2;
+                ctx.quadraticCurveTo(points[i].x, points[i].y, xc, yc);
+            }
 
-    const waveY = Math.cos(
-        index * 0.18 + line * 0.55
-    );
+            // Line Styling (Pure Black with varying opacity and width for a smooth flow)
+            ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)'; 
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+        }
 
-    const spread =
-        (line - (settings.lines - 1) / 2)
-        * settings.spread;
+        // Gradually fade out the tail when the mouse stops moving
+        if (points.length > 0) {
+            points.shift();
+        }
 
-    return {
-        x: point.x + spread + waveX * (line * 1.4),
-        y: point.y + spread + waveY * (line * 1.4)
-    };
-}
-
-function drawLine(line) {
-
-    if (points.length < 2) return;
-
-    ctx.beginPath();
-
-    const first = getLinePoint(points[0], 0, line);
-
-    ctx.moveTo(first.x, first.y);
-
-    for (let i = 1; i < points.length; i++) {
-
-        const current =
-            getLinePoint(points[i], i, line);
-
-        const previous =
-            getLinePoint(points[i - 1], i - 1, line);
-
-        const centerX =
-            (previous.x + current.x) / 2;
-
-        const centerY =
-            (previous.y + current.y) / 2;
-
-        ctx.quadraticCurveTo(
-            previous.x,
-            previous.y,
-            centerX,
-            centerY
-        );
+        requestAnimationFrame(animate);
     }
 
-    const opacity =
-        Math.max(
-            settings.opacity - line * 0.012,
-            0.03
-        );
-
-    /* BLACK LINES */
-    ctx.strokeStyle =
-        `rgba(0, 0, 0, ${opacity})`;
-
-    ctx.lineWidth = settings.lineWidth;
-
-    ctx.lineCap = "round";
-    ctx.lineJoin = "round";
-
-    ctx.stroke();
-}
-
-function animate() {
-
-    ctx.clearRect(
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    for (
-        let line = 0;
-        line < settings.lines;
-        line++
-    ) {
-        drawLine(line);
-    }
-
-    points.forEach(point => {
-        point.life -= 0.012;
-    });
-
-    points = points.filter(
-        point => point.life > 0
-    );
-
-    requestAnimationFrame(animate);
-}
-
-animate();
+    animate();
+})();
