@@ -16,7 +16,7 @@
     10.0 Widget Section
     11.0 Footer Section
     12.0 Scroll To Top
-    13.0 mouse trail
+
 
     ==========================================================================
     Xavia Personal Portfolio 0.1
@@ -1603,24 +1603,6 @@ ul.nav > li > a.active {
         right: 25px;
         bottom: 25px;
     }
-}
-
-
-/* ---- End of max-width 767px CSS ---- */
-
-
-/* ---- Start of max-width 767px CSS ---- */
-/* ==========================================
-   Mouse Trail Animation Styles
-   ========================================== */
-#trailCanvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    pointer-events: none; /* Prevents the canvas from blocking clicks on your site */
-    z-index: 9999;        /* Set to -1 if you want the lines BEHIND your text/content */
 }
 
 
