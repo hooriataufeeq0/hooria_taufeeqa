@@ -1610,14 +1610,18 @@ ul.nav > li > a.active {
 
 
 /* ---- Start of max-width 767px CSS ---- */
-#mouseTrail {
+/* ==========================================
+   Mouse Trail Animation Styles
+   ========================================== */
+#trailCanvas {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    pointer-events: none;
-    z-index: 99999;
+    pointer-events: none; /* Prevents the canvas from blocking clicks on your site */
+    z-index: 9999;        /* Set to -1 if you want the lines BEHIND your text/content */
 }
+
 
 /* ---- End of max-width 767px CSS ---- */
